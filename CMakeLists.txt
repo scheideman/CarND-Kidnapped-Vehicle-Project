@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.11)
 project(PARTICLE_FILTER)
-
+include(CMakeToolsHelpers OPTIONAL)
 
 # Build the particle filter project and solution.
 # Use C++11

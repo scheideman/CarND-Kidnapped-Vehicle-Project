@@ -111,10 +111,17 @@ int main() {
 			noisy_observations.push_back(obs);
 		}
 
+
+		ostringstream os;
+		os << "output/particles" << i << ".txt";
+		string s = os.str();
+
+		pf.write(s);
 		// Update the weights and resample
 		pf.updateWeights(sensor_range, sigma_landmark, noisy_observations, map);
 		pf.resample();
-		
+			
+
 		// Calculate and output the average weighted error of the particle filter over all time steps so far.
 		vector<Particle> particles = pf.particles;
 		int num_particles = particles.size();
@@ -126,6 +133,9 @@ int main() {
 				best_particle = particles[i];
 			}
 		}
+
+	
+
 		double *avg_error = getError(gt[i].x, gt[i].y, gt[i].theta, best_particle.x, best_particle.y, best_particle.theta);
 
 		for (int j = 0; j < 3; ++j) {
