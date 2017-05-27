@@ -107,8 +107,6 @@ public:
 	const bool initialized() const {
 		return is_initialized;
 	}
-
-	double bivariate_normal(double x, double y, double mu_x, double mu_y, double sig_x, double sig_y);
 };
 
 

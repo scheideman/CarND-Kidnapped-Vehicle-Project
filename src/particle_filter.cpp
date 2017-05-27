@@ -28,7 +28,7 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 	std::normal_distribution<double> dist_y(y, std[1]);
 	std::normal_distribution<double> dist_theta(theta, std[2]);
 	
-	num_particles = 100;
+	num_particles = 2;
 	for(int i = 0; i < num_particles; i++){
 		Particle p;
 		p.id = i;
@@ -97,8 +97,6 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 			observations[i].id = id_min;
 		}
 	}
-
-
 }
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
@@ -125,7 +123,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	*/
 	
 
-	for(auto p : particles){
+	for(int i = 0; i < num_particles; i++){
+		auto p = particles[i];
 		std::vector<LandmarkObs> predicted_lm;
 		for (auto map_lm : map_landmarks.landmark_list){
 			double d = dist(map_lm.x_f,map_lm.y_f,p.x,p.y);
@@ -164,7 +163,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 				bool found = (lm_it != end(map_landmarks.landmark_list));
 				if(found){
 					double pi = 3.14159265359;
-					VectorXd x_d = VectorXd(2);
+					/*VectorXd x_d = VectorXd(2);
 					x_d << obs.x, obs.y;
 					VectorXd m_d = VectorXd(2);
 					m_d << lm_it->x_f, lm_it->y_f;
@@ -173,22 +172,29 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 						0, pow(std_landmark[1],2);
 					
 					VectorXd tmp = (x_d - m_d);
-					double c1 = tmp.transpose() * cov.inverse() * tmp;
+					double c1 = tmp.transpose() * cov.inverse() * tmp;*/
 					//Guassian PDF
-					double c3 = bivariate_normal(obs.x,obs.y,lm_it->x_f, lm_it->y_f, std_landmark[0],std_landmark[1]);
+					double x = obs.x;
+					double y = obs.y;
+					double m_x = lm_it->x_f;
+					double m_y =  lm_it->y_f;
+					double sig_x = std_landmark[0];
+					double sig_y = std_landmark[1];
+					double c3 = exp(-((x-m_x)*(x-m_x)/(2.0*sig_x*sig_x) + (y-m_y)*(y-m_y)/(2.0*sig_y*sig_y))) / (2.0*pi*sig_x*sig_y);
 					//p.weight = p.weight * exp( -0.5 * c1) / sqrt( (2 * pi * cov).determinant());
 					p.weight = p.weight * c3;
 				}else{
 					std::cout << "Map id not found!!!!" << std::endl;
 				}
+
 			}
+
 		}
+		particles[i] = p;
 	}
 }
 
-double bivariate_normal(double x, double y, double mu_x, double mu_y, double sig_x, double sig_y) {
-  return exp(-((x-mu_x)*(x-mu_x)/(2*sig_x*sig_x) + (y-mu_y)*(y-mu_y)/(2*sig_y*sig_y))) / (2.0*3.14159*sig_x*sig_y);
-}
+
 
 void ParticleFilter::resample() {
 	// TODO: Resample particles with replacement with probability proportional to their weight. 
@@ -208,7 +214,7 @@ void ParticleFilter::resample() {
 
 	std::random_device rd;
     std::mt19937 gen_1(rd());
-	std::uniform_int_distribution<int> dist_int(0,particles.size());
+	std::uniform_int_distribution<int> dist_int(0,N);
     std::mt19937 gen_2(rd());
 	std::uniform_real_distribution<double> dist_real(0, 2 * max_weight);
 
@@ -231,8 +237,10 @@ void ParticleFilter::resample() {
 	for( auto p : particles){
 		resampled.push_back(particles[d(gen)]);
 	}*/
-
-	particles = resampled;
+	for(int i = 0; i < num_particles; i++){
+		particles[i] = resampled[i];	
+	}
+	
 }
 
 void ParticleFilter::write(std::string filename) {
