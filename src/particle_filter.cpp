@@ -174,15 +174,20 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 					
 					VectorXd tmp = (x_d - m_d);
 					double c1 = tmp.transpose() * cov.inverse() * tmp;
-
 					//Guassian PDF
-					p.weight = p.weight * exp( -0.5 * c1) / sqrt( (2 * pi * cov).determinant());
+					double c3 = bivariate_normal(obs.x,obs.y,lm_it->x_f, lm_it->y_f, std_landmark[0],std_landmark[1]);
+					//p.weight = p.weight * exp( -0.5 * c1) / sqrt( (2 * pi * cov).determinant());
+					p.weight = p.weight * c3;
 				}else{
 					std::cout << "Map id not found!!!!" << std::endl;
 				}
 			}
 		}
 	}
+}
+
+double bivariate_normal(double x, double y, double mu_x, double mu_y, double sig_x, double sig_y) {
+  return exp(-((x-mu_x)*(x-mu_x)/(2*sig_x*sig_x) + (y-mu_y)*(y-mu_y)/(2*sig_y*sig_y))) / (2.0*3.14159*sig_x*sig_y);
 }
 
 void ParticleFilter::resample() {
