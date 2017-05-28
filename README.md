@@ -1,6 +1,6 @@
 # Overview
 
-This project implements a 2 dimensional particle filter in C++. Your particle filter is given a map and some initial localization information (analogous to what a GPS would provide). At each time step the filter will gets observation and control data. 
+This project implements a 2 dimensional particle filter in C++. The particle filter is given a map and some initial localization information (analogous to what a GPS would provide). At each time step the filter will get observation and control data.
 
 # Implementation
 
