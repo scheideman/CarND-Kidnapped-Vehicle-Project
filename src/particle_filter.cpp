@@ -119,17 +119,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	//   https://www.willamette.edu/~gorr/classes/GeneralGraphics/Transforms/transforms2d.htm
 	//   and the following is a good resource for the actual equation to implement (look at equation 
 	//   3.33
-	//   http://planning.cs.uiuc.edu/node99.html
-	/*
-	This is my workflow for updating weights (repeated for each particle):
-
-1. Make list of all landmarks within sensor range of particle, call this `predicted_lm`
-2. Convert all observations from local to global frame, call this `transformed_obs`
-3. Perform `dataAssociation`. This will put the index of the `predicted_lm` nearest to each `transformed_obs` in the `id` field of the `transformed_obs` element.
-4. Loop through all the `transformed_obs`. Use the saved index in the `id` to find the associated landmark and compute the gaussian. 
-5. Multiply all the gaussian values together to get total probability of particle (the weight). (edited)
-	*/
-	
+	//   http://planning.cs.uiuc.edu/node99.html	
 
 	for(int i = 0; i < num_particles; i++){
 		auto p = particles[i];
