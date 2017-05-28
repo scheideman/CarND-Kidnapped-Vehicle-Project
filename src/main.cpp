@@ -189,14 +189,6 @@ int main()
   }
   h.run();
 }
-/*
-	ostringstream os;
-		os << "output/particles" << i << ".txt";
-		string s = os.str();
-
-		pf.write(s);
-*/
-
 
 
 
